@@ -22,9 +22,9 @@ import com.amazonaws.services.rekognition.model.CompareFacesResult
 import com.amazonaws.services.rekognition.model.ComparedFace
 
 
-public class CompareFacesExample {
+class CompareFacesExample {
 
-   public static void main(String[] args) throws Exception{
+   static void main(String[] args) throws Exception{
        
       String bucketName = "training.makingdevs.com"
       Float similarityThreshold = 70F
