@@ -4,7 +4,7 @@ import java.io.InputStream
 import java.nio.ByteBuffer
 import java.util.List
 
-
+import com.amazonaws.regions.Regions
 import com.amazonaws.services.rekognition.model.S3Object
 import com.amazonaws.AmazonClientException
 import com.amazonaws.auth.AWSCredentials
@@ -28,8 +28,8 @@ public class CompareFacesExample {
        
       String bucketName = "training.makingdevs.com"
       Float similarityThreshold = 70F
-      S3Object sourceImage = (new S3Object()).withBucket(bucketName).withName("image1.jpg")
-      S3Object targetImage = (new S3Object()).withBucket(bucketName).withName("image4.jpg")
+      S3Object sourceImage = (new S3Object()).withBucket(bucketName).withName("videos/image1_superchida.jpg")
+      S3Object targetImage = (new S3Object()).withBucket(bucketName).withName("videos/image3_superchida.jpg")
 
       AWSCredentials credentials
       try {
@@ -40,11 +40,9 @@ public class CompareFacesExample {
                    location (/Users/userid/.aws/credentials), and is in valid format.""", e)
       }
       
-      EndpointConfiguration endpoint=new EndpointConfiguration("http://training.makingdevs.com.s3.amazonaws.com","us-east-1")
-
       AmazonRekognition rekognitionClient = AmazonRekognitionClientBuilder
                .standard()
-               .withEndpointConfiguration(endpoint)
+               .withRegion(Regions.US_EAST_1)
                .withCredentials(new AWSStaticCredentialsProvider(credentials))
                .build()
        //Load source and target images and create input parameters
