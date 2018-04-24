@@ -26,7 +26,7 @@ class CompareFacesExample {
 
    static void main(String[] args) throws Exception{
        
-      String bucketName = "training.makingdevs.com"
+      String bucketName = "your-bucket-name"
       Float similarityThreshold = 70F
       S3Object sourceImage = new S3Object().withBucket(bucketName).withName("videos/image1_superchida.jpg")
       S3Object targetImage = new S3Object().withBucket(bucketName).withName("videos/image4_superchida.jpg")
