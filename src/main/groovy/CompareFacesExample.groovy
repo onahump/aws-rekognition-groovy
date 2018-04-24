@@ -28,16 +28,16 @@ public class CompareFacesExample {
        
       String bucketName = "training.makingdevs.com"
       Float similarityThreshold = 70F
-      S3Object sourceImage = (new S3Object()).withBucket(bucketName).withName("videos/image1_superchida.jpg")
-      S3Object targetImage = (new S3Object()).withBucket(bucketName).withName("videos/image3_superchida.jpg")
+      S3Object sourceImage = new S3Object().withBucket(bucketName).withName("videos/image1_superchida.jpg")
+      S3Object targetImage = new S3Object().withBucket(bucketName).withName("videos/image4_superchida.jpg")
 
       AWSCredentials credentials
       try {
            credentials = new ProfileCredentialsProvider("adminuser").getCredentials()
       } catch (Exception e) {
-           throw new AmazonClientException("""Cannot load the credentials from the credential profiles file.
-                   Please make sure that your credentials file is at the correct 
-                   location (/Users/userid/.aws/credentials), and is in valid format.""", e)
+          throw new AmazonClientException("""Cannot load the credentials from the credential profiles file.
+          Please make sure that your credentials file is at the correct 
+          location (/Users/userid/.aws/credentials), and is in valid format.""", e)
       }
       
       AmazonRekognition rekognitionClient = AmazonRekognitionClientBuilder
@@ -61,19 +61,19 @@ public class CompareFacesExample {
 
 
        // Display results
-       List <CompareFacesMatch> faceDetails = compareFacesResult.getFaceMatches()
-       for (CompareFacesMatch match: faceDetails){
-        ComparedFace face= match.getFace()
-        BoundingBox position = face.getBoundingBox()
-        println """Face at ${position.getLeft().toString()}
-                ${position.getTop()}
-                matches with  ${face.getConfidence().toString()} % confidence."""
-       }
+      List <CompareFacesMatch> faceDetails = compareFacesResult.getFaceMatches()
+      for (CompareFacesMatch match: faceDetails){
+          ComparedFace face = match.getFace()
+          BoundingBox position = face.getBoundingBox()
+          println """Face at ${position.getLeft().toString()}
+          ${position.getTop()}
+          Matches with  ${face.getConfidence().toString()} % confidence."""
+      }
 
        List<ComparedFace> uncompared = compareFacesResult.getUnmatchedFaces()
 
-       println "There were ${uncompared.size()} that did not match"
-       println "Source image rotation: ${compareFacesResult.getSourceImageOrientationCorrection()}"
-       println "target image rotation: ${compareFacesResult.getTargetImageOrientationCorrection()}"
+      println """There were ${uncompared.size()} that did not match
+      Source image rotation: ${compareFacesResult.getSourceImageOrientationCorrection()}
+      Target image rotation: ${compareFacesResult.getTargetImageOrientationCorrection()}"""
    }
 }
