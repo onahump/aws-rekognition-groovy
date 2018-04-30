@@ -3,7 +3,13 @@ import java.io.FileInputStream
 import java.io.InputStream
 import java.nio.ByteBuffer
 import java.util.List
+import java.io.IOException
+import groovy.json.*
 
+import com.amazonaws.AmazonServiceException
+import com.amazonaws.services.s3.AmazonS3
+import com.amazonaws.services.s3.AmazonS3Client
+import com.amazonaws.services.s3.mdel.PutObjectRequest
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.rekognition.model.S3Object
 import com.amazonaws.AmazonClientException
@@ -25,7 +31,7 @@ import com.amazonaws.services.rekognition.model.ComparedFace
 class CompareFacesExample {
 
    static void main(String[] args) throws Exception{
-       
+
       String bucketName = "your-bucket-name"
       Float similarityThreshold = 70F
       S3Object sourceImage = new S3Object().withBucket(bucketName).withName("videos/image1_superchida.jpg")
@@ -36,10 +42,10 @@ class CompareFacesExample {
            credentials = new ProfileCredentialsProvider("adminuser").getCredentials()
       } catch (Exception e) {
           throw new AmazonClientException("""Cannot load the credentials from the credential profiles file.
-          Please make sure that your credentials file is at the correct 
+          Please make sure that your credentials file is at the correct
           location (/Users/userid/.aws/credentials), and is in valid format.""", e)
       }
-      
+
       AmazonRekognition rekognitionClient = AmazonRekognitionClientBuilder
                .standard()
                .withRegion(Regions.US_EAST_1)
@@ -48,9 +54,11 @@ class CompareFacesExample {
        //Load source and target images and create input parameters
 
        Image source =new Image().withS3Object(sourceImage)
+       
+
        Image target =new Image().withS3Object(targetImage)
 
-      
+
        CompareFacesRequest request = new CompareFacesRequest()
                .withSourceImage(source)
                .withTargetImage(target)
@@ -59,21 +67,6 @@ class CompareFacesExample {
        // Call operation
        CompareFacesResult compareFacesResult=rekognitionClient.compareFaces(request)
 
-
-       // Display results
-      List <CompareFacesMatch> faceDetails = compareFacesResult.getFaceMatches()
-      for (CompareFacesMatch match: faceDetails){
-          ComparedFace face = match.getFace()
-          BoundingBox position = face.getBoundingBox()
-          println """Face at ${position.getLeft().toString()}
-          ${position.getTop()}
-          Matches with  ${face.getConfidence().toString()} % confidence."""
-      }
-
-       List<ComparedFace> uncompared = compareFacesResult.getUnmatchedFaces()
-
-      println """There were ${uncompared.size()} that did not match
-      Source image rotation: ${compareFacesResult.getSourceImageOrientationCorrection()}
-      Target image rotation: ${compareFacesResult.getTargetImageOrientationCorrection()}"""
+       println new JsonBuilder(compareFacesResult).toPrettyString()
    }
 }
